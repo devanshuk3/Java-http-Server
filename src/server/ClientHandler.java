@@ -2,6 +2,7 @@ package server;
 
 import java.io.*;
 import java.net.*;
+import http.HttpResponse;
 public class ClientHandler {
     
     private Socket clientSocket;
@@ -19,49 +20,32 @@ public class ClientHandler {
             //get data in chunks
 
             OutputStream output = clientSocket.getOutputStream();
-            PrintWriter writer = new PrintWriter(output, true);
-             //parameters -- output is the data, and true is for autoflush on
+            
+            String requestLine = reader.readLine();
+            if(requestLine!=null)System.out.println("Request:" + requestLine);
 
-            System.out.println("Full HTTP Request");
-            System.out.println();
+            String headerLine;
+             while((headerLine=reader.readLine()) != null && !headerLine.isEmpty()){
 
-            String line; //iterator to get the value
-            int lineCount = 0; //to index the values
+             }
 
-            while((line = reader.readLine())!=null){ 
-                //read until we encounter an empty line 
-                //empty line means the end of headers
-                System.out.println(line);
-                lineCount++;
+             HttpResponse response = new HttpResponse();
 
-                if(line.isEmpty())break;
-            }
-            System.out.println();     //printing on console
-            System.out.println("END OF REQUEST");
-            System.out.println("Total lines: " + lineCount);
-            System.out.println();
+             response.setStatus(200, "OK");
+             response.setBody("Hello World!");
+             response.setHeader("Content-Type", "text/html");
 
-            String responseBody = "<h1>Client Connecteddddd!</h1><p>Check your terminal for the full request.</p>"; //body of the response
-            //only the response body is being written on the page
-            writer.println("HTTP/1.1 200 OK"); //content headers in the response body
-            writer.println("Content-Type: text/html");
-            writer.println("Content-Length: " + responseBody.length());
-            writer.println(); //crlf -- carriage return and line feed(\r)
-            writer.println(responseBody);
-            writer.flush();
+             output.write(response.getBytes());
+             output.flush();
 
-            System.out.println("Response sent to client");
+             System.out.println("Response sent!");
+             System.out.println();
+
+             clientSocket.close();
         }
         catch(IOException e){ 
             System.err.println("Error handling client: " + e.getMessage()); 
             //handle the exceptions
-        }finally{
-            try{
-                clientSocket.close();
-            }
-            catch(IOException e){ 
-                //ignore the exceptions which arrive while closing the socket connection
-            }
+        }
         }
     }
-}
