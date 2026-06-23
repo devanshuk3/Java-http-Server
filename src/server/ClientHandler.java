@@ -7,13 +7,14 @@ public class ClientHandler {
     private Socket clientSocket;
 
     public ClientHandler(Socket socket){
-        this.clientSocket = socket; //intialize the socket for client comms
+        this.clientSocket = socket;
+        //intialize the socket for client comms
     }
 
     public void handle(){
         try{
             InputStream input = clientSocket.getInputStream(); 
-            //start the input stream
+            //reads the input stream for the network sockets
             BufferedReader reader = new BufferedReader (new InputStreamReader(input)); 
             //get data in chunks
 
@@ -45,20 +46,21 @@ public class ClientHandler {
             writer.println("HTTP/1.1 200 OK"); //content headers in the response body
             writer.println("Content-Type: text/html");
             writer.println("Content-Length: " + responseBody.length());
-            writer.println();
+            writer.println(); //crlf -- carriage return and line feed(\r)
             writer.println(responseBody);
             writer.flush();
 
             System.out.println("Response sent to client");
         }
         catch(IOException e){ 
-            System.err.println("Error handling client: " + e.getMessage());    //handle the exceptions
+            System.err.println("Error handling client: " + e.getMessage()); 
+            //handle the exceptions
         }finally{
             try{
                 clientSocket.close();
             }
-            catch(IOException e){ //ignore the exceptions which arrive while closing the socket connection
-
+            catch(IOException e){ 
+                //ignore the exceptions which arrive while closing the socket connection
             }
         }
     }

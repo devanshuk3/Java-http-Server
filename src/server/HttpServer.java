@@ -25,7 +25,6 @@ public class HttpServer {
                 Socket clientSocket = serverSocket.accept(); //wait for a client to connect
                 System.out.println("Client connecteddd!!!!");
 
-
                 ClientHandler handler = new ClientHandler(clientSocket);
                 handler.handle(); //object from the clientHandler to call it's function
             }
@@ -41,7 +40,7 @@ public class HttpServer {
         }
 
     public static void main(String []args){
-        HttpServer server = new HttpServer(5000); //create and start server on port 5000
+        HttpServer server = new HttpServer(8080); //create and start server on port 5000
         server.start();
     }
 }
